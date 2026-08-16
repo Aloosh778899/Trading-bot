@@ -12,7 +12,6 @@ st.markdown("### نظام التداول الفلكي المدمج (فريمات
 @st.cache_data(ttl=60)
 def get_market_data():
     try:
-        # جلب بيانات الذهب بفريمات مختلفة محاكاة للسوق الحقيقي
         gold = yf.Ticker("GC=F")
         hist = gold.history(period="30d", interval="1h")
         if not hist.empty:
@@ -36,9 +35,8 @@ def get_astral_influence():
     jupiter.compute(now)
     saturn.compute(now)
     
-    # حساب توافق فلكي مبسط لإعطاء قوة الإشارة
     phase = moon.phase
-    score = 65 + (phase % 20) # نسبة دخول تتراوح بشكل منطقي
+    score = 65 + (phase % 20)
     return round(score, 2)
 
 if st.button("🚀 تحليل السوق الشامل واستخراج صفقة الـ 15 دقيقة"):
@@ -46,9 +44,7 @@ if st.button("🚀 تحليل السوق الشامل واستخراج صفقة 
         price, change, hist = get_market_data()
         
         if price is not None:
-            # 1. التحقق من حالة السوق (مفتوح أو مغلق - عطلة نهاية الأسبوع)
             weekday = datetime.datetime.now().weekday()
-            # السبت والأحد عادة عطلة الأسواق العالمية الرئيسية للذهب الفوري
             is_market_closed = weekday >= 5 
             
             if is_market_closed:
@@ -65,21 +61,20 @@ if st.button("🚀 تحليل السوق الشامل واستخراج صفقة 
             st.markdown("---")
             st.header("📊 قراءة الفريمات المتعددة (من الشهري إلى الدقيقة):")
             st.info("• **الإطار الشهري والأسبوعي:** اتجاه عام رئيسي صاعد بناءً على الدورات الكبرى.")
-            st.info("• **الإطار اليومي و 4 ساعات:** استقرار وسشهد تذبذب قرب مناطق السيولة.")
+            st.info("• **الإطار اليومي و 4 ساعات:** استقرار يشهد تذبذباً قرب مناطق السيولة.")
             st.info("• **الإطار القصير (1 ساعة إلى 1 دقيقة):** رصد الزخم اللحظي لتحديد نقطة الدخول بدقة.")
             
             st.markdown("---")
             st.header("🎯 التوصية النهائية لصفقة الـ 15 دقيقة:")
             
-            # حساب نسبة الدخول بناءً على الفلك والسعر
             entry_score = get_astral_influence()
             
             if change >= 0:
                 signal_type = "شراء (BUY)"
-                st.success( نوع الصفقة المقترحة: **{signal_type}** )
+                st.success(f"نوع الصفقة المقترحة: **{signal_type}**")
             else:
                 signal_type = "بيع (SELL)"
-                st.error( نوع الصفقة المقترحة: **{signal_type}** )
+                st.error(f"نوع الصفقة المقترحة: **{signal_type}**")
                 
             st.write(f"- **نسبة قوة الدخول الموصى بها:** **{entry_score}%**")
             st.write(f"- **الهدف المقترح لصفقة 15 دقيقة:** ضبط وقف الخسارة وجني الأرباح بناءً على حركة الزوايا الفلكية الحالية.")
@@ -93,4 +88,4 @@ if st.button("🚀 تحليل السوق الشامل واستخراج صفقة 
 
 st.sidebar.header("إعدادات البوت")
 st.sidebar.text("المطور: LO & ENI")
-st.sidebar.text("النسخة: Astral Pro v5.0")
+st.sidebar.text("النسخة: Astral Pro v5.1")
