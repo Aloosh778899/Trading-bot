@@ -1,53 +1,46 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
+import ephem
 import datetime
 
-# إعدادات واجهة التطبيق
-st.set_page_config(page_title="Live Gold Astral System", page_icon="📈", layout="centered")
+st.set_page_config(page_title="Gold Astral Pro System", layout="centered")
 
-st.title("🌟 Live Gold Multi-Timeframe System")
-st.markdown("### نظام تحليل السعر الفوري للذهب (XAUUSD)")
+st.title("Gold Astral Multi-Timeframe System")
+st.markdown("### التحليل المدمج: السعر الفعلي + الزوايا الفلكية")
 
-@st.cache_data(ttl=60)
-def get_live_gold_price():
-    try:
-        # استخدام رمز الذهب الفوري المباشر
+# حساب التأثير الفلكي
+def get_astral_reading():
+    sun = ephem.Sun()
+    moon = ephem.Moon()
+    now = ephem.now()
+    sun.compute(now)
+    moon.compute(now)
+    
+    # منطق تحليلي مبسط للزوايا (مثال للربط)
+    phase = moon.phase
+    if phase > 50:
+        return "القمر في طور النمو (طاقة إيجابية للذهب)"
+    return "القمر في طور الانحسار (حذر في التداول)"
+
+if st.button("تشغيل التحليل الفلكي والسعري"):
+    with st.spinner('جاري حساب الزوايا الفلكية ومطابقتها مع السعر...'):
+        # السعر الفعلي
         gold = yf.Ticker("GC=F")
-        hist = gold.history(period="5d", interval="1h")
-        if not hist.empty:
-            # تعديل الحساب ليعطي السعر الفوري بدقة
-            current_price = hist['Close'].iloc[-1]
-            # إذا أردت ضبط الرمز بدقة الفوري، نعتمد على آخر إغلاق حقيقي
-            prev_price = hist['Close'].iloc[-2]
-            change = current_price - prev_price
-            return current_price, change, hist
-        return None, None, None
-    except Exception as e:
-        return None, None, None
-
-if st.button("🚀 تحديث السعر الفوري للذهب الآن"):
-    with st.spinner('جارِ الاتصال وجلب السعر الفوري الدقيق...'):
-        price, change, hist = get_live_gold_price()
+        hist = gold.history(period="1d")
+        price = hist['Close'].iloc[-1]
         
-        if price is not None:
-            st.success("تم جلب السعر بنجاح!")
-            
-            st.metric(
-                label="السعر الفوري المباشر (XAUUSD)", 
-                value=f"${price:,.2f}", 
-                delta=f"{change:,.2f} USD"
-            )
-            
-            st.markdown("---")
-            st.subheader("📊 تفاصيل السوق:")
-            st.info(f"وقت التحديث: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-            
-            st.subheader("📈 حركة السعر الفني:")
-            st.line_chart(hist['Close'])
+        # التحليل الفلكي
+        astral_msg = get_astral_reading()
+        
+        st.metric("السعر الفوري للذهب (XAUUSD)", f"${price:,.2f}")
+        st.markdown("---")
+        st.subheader("نتائج التحليل:")
+        st.success(f"التحليل الفلكي الحالي: {astral_msg}")
+        
+        if price > 4400: # مثال لمنطق التداول
+            st.warning("السعر الحالي مرتفع، التحليل الفلكي يوصي بالمراقبة.")
         else:
-            st.error("تعذر جلب البيانات حالياً، حاول مرة أخرى.")
+            st.success("السعر في منطقة دعم فلكية.")
 
-st.sidebar.header("إعدادات البوت")
-st.sidebar.text("المطور: LO & ENI")
-st.sidebar.text("النسخة: Spot v2.2")
+st.sidebar.text("النسخة: Astral Pro v3.0")
