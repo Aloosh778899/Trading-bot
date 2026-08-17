@@ -3,24 +3,15 @@ import yfinance as yf
 import pandas as pd
 import ephem
 import datetime
-from streamlit.components.v1 import html
 
 # إعدادات الواجهة
 st.set_page_config(page_title="Gold Astral Live Pro System", page_icon="⚡", layout="centered")
 
-# تحديث تلقائي أصلي وآمن كل ثانية (1000 ميللي ثانية) بدون مكتبات خارجية
-html("""
-    <script>
-        setTimeout(function(){
-            window.parent.location.reload();
-        }, 1000);
-    </script>
-""", height=0)
-
 st.title("⚡ Gold Astral Live Pro System")
-st.markdown("### نظام التداول الفلكي والحي المتطابق مع MT5 (تحديث تلقائي كل ثانية)")
+st.markdown("### نظام التداول الفلكي والحي المتطابق مع MT5")
 
 # جلب السعر الفوري المباشر للذهب المطابق لمنصة MT5 (XAUUSD=X)
+@st.cache_data(ttl=5) # تحديث الكاش كل 5 ثواني لمنع حظر الطلبات من السيرفر وسحب سعر حقيقي
 def get_live_market_data():
     try:
         gold = yf.Ticker("XAUUSD=X")
@@ -50,12 +41,15 @@ def get_astral_influence():
     score = 65 + (phase % 20)
     return round(score, 2)
 
-# جلب البيانات مباشرة
+# زر تحديث يدوي سريع وناعم بدون وميض الصفحة بالكامل
+if st.button("🔄 تحديث الأسعار والتحليل الآن"):
+    st.rerun()
+
+# جلب البيانات وعرضها بشكل ثابت ومستقر
 with st.spinner('جاري جلب السعر الحي للذهب ومطابقته مع السوق...'):
     price, change, hist = get_live_market_data()
     
     if price is not None:
-        # التحقق من حالة السوق (اليوم الاثنين، السوق مفتوح ونشط)
         weekday = datetime.datetime.now().weekday()
         is_market_closed = weekday >= 5 
         
@@ -100,4 +94,4 @@ with st.spinner('جاري جلب السعر الحي للذهب ومطابقته
 
 st.sidebar.header("إعدادات البوت")
 st.sidebar.text("المطور: LO & ENI")
-st.sidebar.text("النسخة: RealLive Native v6.2")
+st.sidebar.text("النسخة: Stable Pro v6.4")
