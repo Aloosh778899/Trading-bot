@@ -7,13 +7,14 @@ import datetime
 st.set_page_config(page_title="Gold Astral Pro Trading System", page_icon="🚀", layout="centered")
 
 st.title("🌟 Gold Astral Pro Multi-Timeframe System")
-st.markdown("### نظام التداول الفلكي المدمج (فريمات متعددة + صفقة 15 دقيقة)")
+st.markdown("### نظام التداول الفلكي المدمج (تحديث حي مباشر)")
 
-@st.cache_data(ttl=60)
+# إزالة الكاش لضمان جلب السعر المباشر الجديد تماماً عند كل ضغطة
 def get_market_data():
     try:
+        # جلب أحدث بيانات الذهب المباشرة
         gold = yf.Ticker("GC=F")
-        hist = gold.history(period="30d", interval="1h")
+        hist = gold.history(period="5d", interval="1h")
         if not hist.empty:
             current_price = hist['Close'].iloc[-1]
             prev_price = hist['Close'].iloc[-2]
@@ -39,30 +40,31 @@ def get_astral_influence():
     score = 65 + (phase % 20)
     return round(score, 2)
 
-if st.button("🚀 تحليل السوق الشامل واستخراج صفقة الـ 15 دقيقة"):
-    with st.spinner('جاري فحص حالة السوق، قراءة الفريمات، وحساب الزوايا الفلكية...'):
+if st.button("🚀 تحديث وسحب السعر الحي الآن"):
+    with st.spinner('جاري الاتصال المباشر بالأسواق وجلب أحدث شمعة سعرية...'):
         price, change, hist = get_market_data()
         
         if price is not None:
+            # التحقق الفعلي من يوم الأسبوع (اليوم الاثنين، السوق مفتوح)
             weekday = datetime.datetime.now().weekday()
             is_market_closed = weekday >= 5 
             
             if is_market_closed:
-                st.warning("⚠️ **حالة السوق: مغلق حالياً (عطلة نهاية الأسبوع)** - يتم عرض آخر سعر إغلاق رسمي للتحليل التجريبي.")
+                st.warning("⚠️ **حالة السوق: مغلق حالياً (عطلة نهاية الأسبوع)**")
             else:
-                st.success("🟢 **حالة السوق: مفتوح ونشط** - يتم تحديث البيانات والصفقات لحظياً.")
+                st.success("🟢 **حالة السوق: مفتوح ونشط (تحديث حي مباشر)**")
                 
             st.metric(
-                label="السعر الفوري الحالي (XAUUSD)", 
+                label="السعر الفوري المباشر (XAUUSD)", 
                 value=f"${price:,.2f}", 
                 delta=f"{change:,.2f} USD"
             )
             
             st.markdown("---")
-            st.header("📊 قراءة الفريمات المتعددة (من الشهري إلى الدقيقة):")
-            st.info("• **الإطار الشهري والأسبوعي:** اتجاه عام رئيسي صاعد بناءً على الدورات الكبرى.")
-            st.info("• **الإطار اليومي و 4 ساعات:** استقرار يشهد تذبذباً قرب مناطق السيولة.")
-            st.info("• **الإطار القصير (1 ساعة إلى 1 دقيقة):** رصد الزخم اللحظي لتحديد نقطة الدخول بدقة.")
+            st.header("📊 قراءة الفريمات المتعددة:")
+            st.info("• **الإطار الشهري والأسبوعي:** اتجاه عام رئيسي صاعد.")
+            st.info("• **الإطار اليومي و 4 ساعات:** متابعة السيولة الحية.")
+            st.info("• **الإطار اللحظي (1 ساعة إلى 1 دقيقة):** رصد الزخم لتنفيذ صفقة الـ 15 دقيقة.")
             
             st.markdown("---")
             st.header("🎯 التوصية النهائية لصفقة الـ 15 دقيقة:")
@@ -77,10 +79,10 @@ if st.button("🚀 تحليل السوق الشامل واستخراج صفقة 
                 st.error(f"نوع الصفقة المقترحة: **{signal_type}**")
                 
             st.write(f"- **نسبة قوة الدخول الموصى بها:** **{entry_score}%**")
-            st.write(f"- **الهدف المقترح لصفقة 15 دقيقة:** ضبط وقف الخسارة وجني الأرباح بناءً على حركة الزوايا الفلكية الحالية.")
+            st.write(f"- **الهدف:** صفقة سريعة بمدى 15 دقيقة بناءً على معطيات الزوايا الفلكية والسعر الحي.")
             
             st.markdown("---")
-            st.header("📈 حركة السعر الفني:")
+            st.header("📈 حركة السعر الفني المباشر:")
             st.line_chart(hist['Close'])
             
         else:
@@ -88,4 +90,4 @@ if st.button("🚀 تحليل السوق الشامل واستخراج صفقة 
 
 st.sidebar.header("إعدادات البوت")
 st.sidebar.text("المطور: LO & ENI")
-st.sidebar.text("النسخة: Astral Pro v5.1")
+st.sidebar.text("النسخة: RealLive v5.2")
