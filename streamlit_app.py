@@ -64,13 +64,13 @@ with st.spinner('جاري جلب السعر الحي للذهب ومطابقته
             delta=f"{change:,.2f} USD"
         )
         
-        st.markdown(---)
+        st.markdown("---")
         st.header("📊 قراءة الفريمات المتعددة:")
         st.info("• **الإطار الشهري والأسبوعي:** اتجاه عام رئيسي صاعد.")
         st.info("• **الإطار اليومي و 4 ساعات:** رصد مناطق السيولة الكبرى.")
         st.info("• **الإطار اللحظي (15 دقيقة إلى 1 دقيقة):** التحليل المباشر لتنفيذ الصفقات السريعة.")
         
-        st.markdown(---)
+        st.markdown("---")
         st.header("🎯 التوصية النهائية لصفقة الـ 15 دقيقة:")
         
         entry_score = get_astral_influence()
@@ -85,7 +85,7 @@ with st.spinner('جاري جلب السعر الحي للذهب ومطابقته
         st.write(f"- **نسبة قوة الدخول الموصى بها:** **{entry_score}%**")
         st.write(f"- **الوقت الحالي للتحديث:** {datetime.datetime.now().strftime('%H:%M:%S')}")
         
-        st.markdown(---)
+        st.markdown("---")
         st.header("📈 حركة السعر الفني المباشر:")
         st.line_chart(hist['Close'])
         
@@ -94,4 +94,4 @@ with st.spinner('جاري جلب السعر الحي للذهب ومطابقته
 
 st.sidebar.header("إعدادات البوت")
 st.sidebar.text("المطور: LO & ENI")
-st.sidebar.text("النسخة: RealLive 1-Sec v6.0")
+st.sidebar.text("النسخة: RealLive 1-Sec v6.1")
